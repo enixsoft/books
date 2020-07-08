@@ -5,19 +5,60 @@ use Illuminate\Http\Request;
 use App\Book;
 use Illuminate\Support\Facades\Storage;
 use Image;
+use DateTime;
 
 class BooksController extends Controller
 {	
-	public function welcome()
+	public function show(Request $request)
 	{
-		$books = Book::orderBy('name', 'asc')->get();			
+		$attribs = (new Book())->getFillable();
+		
+		$orderBy = 'name';
+		$orderType = 'desc';		
+		$searchedName = null;
+		$minPublicationDate = null;
+		$maxPublicationDate = null;
+		$filters = [];
+		
+		if(in_array($request->query('orderBy'), $attribs) && ($request->query('orderType') == 'asc' || $request->query('orderType') == 'desc'))
+		{
+			$orderBy = $request->query('orderBy');
+			$orderType = $request->query('orderType');
+		}
 
-		return view("welcome", compact('books'));
+		if(strtotime($request->query('minPublicationDate')))
+		{			
+			$minPublicationDate = $request->query('minPublicationDate');
+			array_push($filters, ['publicationdate', '>=', $minPublicationDate]);
+		}
+
+		if(strtotime($request->query('maxPublicationDate')))
+		{
+			$maxPublicationDate = $request->query('maxPublicationDate');
+			array_push($filters, ['publicationdate', '<=', $maxPublicationDate]);
+		}
+
+		if(is_string($request->query('searchedName')))
+		{
+			$searchedName = $request->query('searchedName');
+			array_push($filters, ['name', 'like', '%'.$request->query('searchedName').'%']);
+		}
+
+		if(count($filters) > 0)
+		{
+			$books = Book::where($filters)->orderBy($orderBy, $orderType)->paginate(2);
+		}
+		else
+		{
+			$books = Book::orderBy($orderBy, $orderType)->paginate(2);
+		}		
+
+		return view("welcome", compact('books', 'orderBy', 'orderType', 'searchedName', 'minPublicationDate', 'maxPublicationDate'));
 	}
 
 	public function create()
 	{	
-		return view("editbook");
+		return view("editor");
 	}
 
 	public function store(Request $request)

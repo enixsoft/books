@@ -5,8 +5,8 @@
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <meta name="description" content="">
       <meta name="author" content="">
-      <!-- <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico"> -->
-      <title>Books example for Bootstrap</title>
+      <link rel="icon" href="/favicon.ico">
+      <title>Books built on Bootstrap</title>
       <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/album/">
       <!-- Bootstrap CSS -->
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
@@ -73,47 +73,69 @@
          <section class="jumbotron text-center">
             <div class="container">
                <h1 class="jumbotron-heading">Books</h1>
-               <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don't simply skip over it entirely.</p>
+               <p class="lead text-muted">View and search books by using the form below. Books can be ordered by their names and publication dates. You can also set the maximum and minimum publication dates.</p>
                <p>
                   <a href="/editor" class="btn btn-primary my-2">Add book</a>
                </p>
             </div>
          </section>
          <div class="album py-5 bg-light">
-            <div class="container">
-               <div class="row">
-                  <div class="col-sm-12 mb-3">
-                     <input type="text" id="myFilter" class="form-control" onkeyup="myFunction()" placeholder="Search books by name...">
+         <div class="container">
+         <div class="row">
+            <form method="GET" action="{{ route('/') }}" class="col-md-12">
+               <div class="col-sm-12 mb-3">
+                  <input type="text" id="myFilter" class="form-control" name="searchedName" value="{{ $searchedName }}" placeholder="Search books by name...">
+               </div>
+               <div class="col-sm-12 mb-3 mx-md-2 d-md-flex align-items-center">						
+                  <label for="orderBy" class="col-form-label mr-2">Order by</label>
+                  <select class="form-control" name="orderBy">
+                  <option {{ $orderBy == 'name' ? 'selected' : '' }} value="name">Name</option>
+                  <option {{ $orderBy == 'publicationdate' ? 'selected' : '' }} value="publicationdate">Publication Date</option>		
+                  </select>
+                  <label for="orderType" class="col-form-label mx-md-2">Order type</label>
+                  <select class="form-control" name="orderType">
+                  <option {{ $orderType == 'asc' ? 'selected' : '' }} value="asc">Ascending</option>
+                  <option {{ $orderType == 'desc' ? 'selected' : '' }} value="desc">Descending</option>		
+                  </select>
+               </div>
+               <div class="col-sm-12 mb-3 mx-md-2 d-md-flex align-items-center">
+                  <label for="minPublicationDate" class="col-form-label mr-2">Minimum Publication Date</label>
+                  <input type="datetime-local" class="form-control" name="minPublicationDate" value="{{ isset($minPublicationDate) ? $minPublicationDate : null }}">
+                  <label for="maxPublicationDate" class="col-form-label mx-md-2">Maximum Publication Date</label>
+                  <input type="datetime-local" class="form-control" name="maxPublicationDate" value="{{ isset($maxPublicationDate) ? $maxPublicationDate : null }}" >
+               </div>
+               <div class="col-sm-12 mb-3">
+                  <button type="submit" class="btn btn-primary btn-lg">
+                  Filter
+                  </button>
+               </div>
+            </form>
+         </div>
+         <div class="row" id="myItems">
+            @foreach ($books as $book)
+            <div class="col-lg-6">
+               <div class="card box-shadow mb-3 h-100">
+                  <img class="card-img-top" src="storage/{{$book->id}}.jpg" onerror="this.onerror=null;this.src='img/no-image-available.jpg';" alt="Card image cap">
+                  <div class="card-body">
+                     <strong class="d-inline-block mb-2 text-primary text-lowercase">{{ $book->genre }}</strong>
+                     <h5 class="card-title"><a href="books/{{ $book->id}}">{{ $book->name }}</a></h5>
+                     <h6 class="card-subtitle mb-2 text-muted">{{ $book->email }}</h6>
+                     <p class="card-text">{{ $book->abstract }}</p>
+                     <ul class="list-group list-group-flush">
+                        <li class="list-group-item">ISBN: {{ $book->isbn }}</li>
+                        <li class="list-group-item">Length: {{ $book->length }} pages</li>
+                        <li class="list-group-item">Publication date: {{ date_format($book->publicationdate,"d.m.Y H:i:s")  }}</li>
+                     </ul>
                   </div>
                </div>
-               <div class="row" id="myItems">          
-               @foreach ($books as $book)
-                     <div class="col-lg-4">
-                     <div class="card box-shadow mb-2">
-                        <img class="card-img-top" src="storage/{{$book->id}}.jpg" onerror="this.onerror=null;this.src='img/no-image-available.jpg';" alt="Card image cap">
-                        <div class="card-body">
-                           <strong class="d-inline-block mb-2 text-primary text-lowercase">{{ $book->genre }}</strong>
-                           <h5 class="card-title"><a href="books/{{ $book->id}}">{{ $book->name }}</a></h5>
-                           <h6 class="card-subtitle mb-2 text-muted">{{ $book->email }}</h6>
-                           <p class="card-text">{{ $book->abstract }}</p>
-                           <ul class="list-group list-group-flush">
-                            <li class="list-group-item">ISBN: {{ $book->isbn }}</li>
-                            <li class="list-group-item">Length: {{ $book->length }} pages</li>
-                            <li class="list-group-item">Publication date: {{ $book->publicationdate }}</li>
-                          </ul>
-                           <!-- <div class="text-center">
-                              <div class="btn-group">
-                                 <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                 <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                              </div>
-                           </div> -->
-                        </div>
-                     </div>    
-                     </div>      
-                  @endforeach             
+            </div>
+            @endforeach             
+         </div>
+         <div class="mt-2 text-center">
+            {{ $books->appends(['searchedName' => $searchedName, 'minPublicationDate' => $minPublicationDate, 'maxPublicationDate' => $maxPublicationDate, 'orderBy' => $orderBy, 'orderType' => $orderType])->links() }}
+            <div>
             </div>
          </div>
-      </div>
       </main>
       <!-- Bootstrap core JavaScript
          ================================================== -->
