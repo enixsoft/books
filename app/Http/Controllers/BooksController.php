@@ -14,7 +14,7 @@ class BooksController extends Controller
 		$attribs = (new Book())->getFillable();
 		
 		$orderBy = 'name';
-		$orderType = 'desc';		
+		$orderType = 'asc';		
 		$searchedName = null;
 		$minPublicationDate = null;
 		$maxPublicationDate = null;
