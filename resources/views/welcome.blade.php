@@ -82,31 +82,34 @@
          <div class="album py-5 bg-light">
          <div class="container">
          <div class="row">
-            <form method="GET" action="{{ route('/') }}" class="col-md-12">
+            <form method="GET" action="{{ route('/') }}" id="filterForm" class="col-md-12">
                <div class="col-sm-12 mb-3">
-                  <input type="text" id="myFilter" class="form-control" name="searchedName" value="{{ $searchedName }}" placeholder="Search books by name...">
+                  <input type="text" class="form-control" id="searchedName" name="searchedName" value="{{ $searchedName }}" placeholder="Search books by name...">
                </div>
                <div class="col-sm-12 mb-3 mx-md-2 d-md-flex align-items-center">						
                   <label for="orderBy" class="col-form-label mr-2">Order by</label>
-                  <select class="form-control" name="orderBy">
+                  <select class="form-control" name="orderBy" id="orderBy">
                   <option {{ $orderBy == 'name' ? 'selected' : '' }} value="name">Name</option>
                   <option {{ $orderBy == 'publicationdate' ? 'selected' : '' }} value="publicationdate">Publication Date</option>		
                   </select>
                   <label for="orderType" class="col-form-label mx-md-2">Order type</label>
-                  <select class="form-control" name="orderType">
+                  <select class="form-control" name="orderType" id="orderType">
                   <option {{ $orderType == 'asc' ? 'selected' : '' }} value="asc">Ascending</option>
                   <option {{ $orderType == 'desc' ? 'selected' : '' }} value="desc">Descending</option>		
                   </select>
                </div>
                <div class="col-sm-12 mb-3 mx-md-2 d-md-flex align-items-center">
                   <label for="minPublicationDate" class="col-form-label mr-2">Minimum Publication Date</label>
-                  <input type="datetime-local" class="form-control" name="minPublicationDate" value="{{ isset($minPublicationDate) ? $minPublicationDate : null }}">
+                  <input type="datetime-local" class="form-control" id="minPublicationDate" name="minPublicationDate" value="{{ isset($minPublicationDate) ? $minPublicationDate : null }}">
                   <label for="maxPublicationDate" class="col-form-label mx-md-2">Maximum Publication Date</label>
-                  <input type="datetime-local" class="form-control" name="maxPublicationDate" value="{{ isset($maxPublicationDate) ? $maxPublicationDate : null }}" >
+                  <input type="datetime-local" class="form-control" id="maxPublicationDate" name="maxPublicationDate" value="{{ isset($maxPublicationDate) ? $maxPublicationDate : null }}" >
                </div>
                <div class="col-sm-12 mb-3">
                   <button type="submit" class="btn btn-primary btn-lg">
                   Filter
+                  </button>
+                  <button type="button" onclick="resetForm();" class="btn btn-danger btn-lg">
+                  Reset
                   </button>
                </div>
             </form>
@@ -118,7 +121,7 @@
                   <img class="card-img-top" src="storage/{{$book->id}}.jpg" onerror="this.onerror=null;this.src='img/no-image-available.jpg';" alt="Card image cap">
                   <div class="card-body">
                      <strong class="d-inline-block mb-2 text-primary text-lowercase">{{ $book->genre }}</strong>
-                     <h5 class="card-title"><a href="books/{{ $book->id}}">{{ $book->name }}</a></h5>
+                     <h5 class="card-title">{{ $book->name }}</h5>
                      <h6 class="card-subtitle mb-2 text-muted">{{ $book->email }}</h6>
                      <p class="card-text">{{ $book->abstract }}</p>
                      <ul class="list-group list-group-flush">
@@ -145,20 +148,14 @@
       <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
       <script>
-         function myFunction() {
-         var input, filter, cards, cardContainer, h5, title, i;
-         input = document.getElementById("myFilter");
-         filter = input.value.toUpperCase();
-         cardContainer = document.getElementById("myItems");
-         cards = cardContainer.getElementsByClassName("card");
-         for (i = 0; i < cards.length; i++) {
-             title = cards[i].querySelector(".card-body h5.card-title");
-         if (title.innerText.toUpperCase().indexOf(filter) > -1) {
-             cards[i].parentNode.style.display = "";
-         } else {
-             cards[i].parentNode.style.display = "none";
-         }
-         }
+         function resetForm() 
+         {  
+            $("#orderBy").val("name").change();
+            $("#orderType").val("asc").change();            
+            $("#searchedName").val('');
+            $("#minPublicationDate").val(null);
+            $("#maxPublicationDate").val(null);
+            $("#filterForm").submit();
          }
       </script>
    </body>
