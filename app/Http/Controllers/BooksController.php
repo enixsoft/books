@@ -1,31 +1,10 @@
 <?php
 namespace App\Http\Controllers;
 use Illuminate\Routing\Controller;
-
-use Auth;
-use App;
-
 use Illuminate\Http\Request;
-use Illuminate\Database\Seeder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Lang;
-
 use App\Book;
-
-
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\File;
-
-use Storage;
-
-use Validator;
-
-use Redirect;
-
-use Log;
-
-use DB;
+use Illuminate\Support\Facades\Storage;
+use Image;
 
 class BooksController extends Controller
 {	
@@ -50,11 +29,20 @@ class BooksController extends Controller
 		'abstract' => ['required'],
 		'publicationdate' => ['required', 'date'],
 		'email' => ['required', 'email'],
-		'length' => ['required', 'numeric']
+		'length' => ['required', 'numeric'],
+		'image' => ['image','mimes:jpeg,png,jpg,gif','max:2048']
   		]);
 
-		Book::create($validatedData);
+		$book = Book::create($validatedData);
 
-		return redirect()->back()->with('message','Book added succesfully.');
+		if($request->hasFile('image'))
+		{
+			$image = Image::make($request->file('image'))
+  			->resize(400, null, function ($constraint) { $constraint->aspectRatio(); } )
+  			->encode('jpg',80);
+			Storage::disk('public')->put($book->id.'.jpg', $image);
+		}
+
+		return redirect()->back()->with('success','Book added succesfully.');
 	}
 }

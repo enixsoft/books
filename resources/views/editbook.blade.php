@@ -57,9 +57,7 @@
         .box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
     </style>
   </head>
-
   <body>
-
     <header>
       <div class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <div class="container d-flex justify-content-between">
@@ -83,71 +81,74 @@
         </div>
       </div>
     </header>
-
     <main role="main">
-
       <section class="jumbotron text-center">
         <div class="container">
           <h1 class="jumbotron-heading">Books editor</h1>
-          <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don't simply skip over it entirely.</p>
+          <p class="lead text-muted">Use this form to add books to the database. All fields except image are required.</p>
           <p>
             <a href="/" class="btn btn-primary my-2">Show all books</a>
           </p>
-          <form method="POST" action="{{ route('addbook') }}">
+          <form method="POST" action="{{ route('addbook') }}" enctype="multipart/form-data">
           {{ csrf_field() }}
           <div class="form-group row align-items-center">
               <label for="name" class="col-sm-2 col-form-label">Name</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" name="name" placeholder="Name">
+                <input type="text" class="form-control" name="name" placeholder="Name" value="{{ old('name') }}" required>
               </div>
             </div>  
             <div class="form-group row align-items-center">
               <label for="isbn" class="col-sm-2 col-form-label">ISBN</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" name="isbn" placeholder="ISBN" required>
+                <input type="text" class="form-control" name="isbn" placeholder="ISBN" value="{{ old('isbn') }}" required>
               </div>
             </div>
             <div class="form-group row align-items-center">
               <label for="genre" class="col-sm-2 col-form-label">Genre</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" name="genre" placeholder="Genre" required>
+                <input type="text" class="form-control" name="genre" placeholder="Genre" value="{{ old('genre') }}" required>
               </div>
             </div>
             <div class="form-group row align-items-center">
    
             <label for="abstract" class="col-sm-2 col-form-label">Abstract</label>
             <div class="col-sm-10">
-            <textarea class="form-control" name="abstract" rows="3"></textarea>         
+            <textarea class="form-control" name="abstract" rows="3">{{ old('abstract') }}</textarea>         
             </div> 
 
             </div> 
             <div class="form-group row align-items-center">
               <label for="publicationdate" class="col-sm-2 col-form-label">Publication date</label>
               <div class="col-sm-10">
-                <input type="datetime-local" class="form-control" name="publicationdate" placeholder="Publication date" required>
+                <input type="datetime-local" class="form-control" name="publicationdate" placeholder="Publication date" value="{{ old('publicationdate') }}" required>
               </div>
             </div>
             <div class="form-group row align-items-center">
               <label for="email" class="col-sm-2 col-form-label">Author's e-mail</label>
               <div class="col-sm-10">
-                <input type="email" class="form-control" name="email" placeholder="Author's e-mail" required>
+                <input type="email" class="form-control" name="email" placeholder="Author's e-mail" value="{{ old('email') }}" required>
               </div>
             </div>
             <div class="form-group row align-items-center">
               <label for="length" class="col-sm-2 col-form-label">Number of pages</label>
               <div class="col-sm-10">
-                <input type="number" class="form-control" name="length" placeholder="Number of pages" required>
+                <input type="number" class="form-control" name="length" placeholder="Number of pages" value="{{ old('length') }}" required>
               </div>
             </div>
-
+            <div class="form-group row align-items-center">
+              <label for="image" class="col-sm-2 col-form-label">Image</label>
+              <div class="col-sm-10">
+                <input type="file" class="form-control" name="image">
+              </div>
+            </div>
             <div class="form-group row align-items-center">
               <div class="col-md-12">
                 <button type="submit" class="btn btn-primary">Add book</button>
               </div>
             </div>
             </form>
-            @if(session('message'))
-            <p>{{ session('message') }}</p>
+            @if(session('success'))
+            <p>{{ session('success') }}</p>
             @endif
             @if($errors->any())
             <p>
@@ -157,22 +158,8 @@
             <p>
             @endif
         </div>
-      </section>    
-
-
+      </section>
     </main>
-    @dd($errors)
-    <footer class="text-muted">
-      <div class="container">
-        <p class="float-right">
-          <a href="#">Back to top</a>
-        </p>
-        <p>Album example is &copy; Bootstrap, but please download and customize it for yourself!</p>
-        <p>New to Bootstrap? <a href="../../">Visit the homepage</a> or read our <a href="../../getting-started/">getting started guide</a>.</p>
-      </div>
-    </footer>
-
-
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -180,8 +167,7 @@
     <!-- JS, Popper.js, and jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-   
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>   
   </body>
 </html>
 
