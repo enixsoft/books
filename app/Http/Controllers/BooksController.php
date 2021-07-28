@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
-use App\Book;
+use App\Models\Book;
 use Illuminate\Support\Facades\Storage;
 use Image;
 use DateTime;
@@ -13,7 +13,7 @@ class BooksController extends Controller
 	{
 		$attribs = (new Book())->getFillable();
 		
-		$orderBy = 'name';
+		$orderBy = 'title';
 		$orderType = 'asc';		
 		$searchedName = null;
 		$minPublicationDate = null;
@@ -29,19 +29,19 @@ class BooksController extends Controller
 		if(strtotime($request->query('minPublicationDate')))
 		{			
 			$minPublicationDate = $request->query('minPublicationDate');
-			array_push($filters, ['publicationdate', '>=', $minPublicationDate]);
+			array_push($filters, ['published_at', '>=', $minPublicationDate]);
 		}
 
 		if(strtotime($request->query('maxPublicationDate')))
 		{
 			$maxPublicationDate = $request->query('maxPublicationDate');
-			array_push($filters, ['publicationdate', '<=', $maxPublicationDate]);
+			array_push($filters, ['published_at', '<=', $maxPublicationDate]);
 		}
 
 		if(is_string($request->query('searchedName')))
 		{
 			$searchedName = $request->query('searchedName');
-			array_push($filters, ['name', 'like', '%'.$request->query('searchedName').'%']);
+			array_push($filters, ['title', 'like', '%'.$request->query('searchedName').'%']);
 		}
 
 		if(count($filters) > 0)
@@ -64,11 +64,11 @@ class BooksController extends Controller
 	public function store(Request $request)
 	{ 
 	  $validatedData = $request->validate([
-		'name' => ['required', 'max:255'],
+		'title' => ['required', 'max:255'],
 		'isbn' => ['required', 'max:20'],
 		'genre' => ['required', 'max:30'],
 		'abstract' => ['required'],
-		'publicationdate' => ['required', 'date'],
+		'published_at' => ['required', 'date'],
 		'email' => ['required', 'email'],
 		'length' => ['required', 'numeric'],
 		'image' => ['image','mimes:jpeg,png,jpg,gif','max:2048']

@@ -121,13 +121,13 @@
                   <img class="card-img-top" src="storage/{{$book->id}}.jpg" onerror="this.onerror=null;this.src='img/no-image-available.jpg';" alt="Card image cap">
                   <div class="card-body">
                      <strong class="d-inline-block mb-2 text-primary text-lowercase">{{ $book->genre }}</strong>
-                     <h5 class="card-title">{{ $book->name }}</h5>
-                     <h6 class="card-subtitle mb-2 text-muted">{{ $book->email }}</h6>
+                     <h5 class="card-title">{{ $book->title }}</h5>
+                     <h6 class="card-subtitle mb-2 text-muted">{{ $book->author_name }}</h6>
                      <p class="card-text">{{ $book->abstract }}</p>
                      <ul class="list-group list-group-flush">
                         <li class="list-group-item">ISBN: {{ $book->isbn }}</li>
                         <li class="list-group-item">Length: {{ $book->length }} pages</li>
-                        <li class="list-group-item">Publication date: {{ date_format($book->publicationdate,"d.m.Y H:i:s")  }}</li>
+                        <li class="list-group-item">Publication date: {{ date_format($book->published_at, "d.m.Y")  }}</li>
                      </ul>
                   </div>
                </div>
